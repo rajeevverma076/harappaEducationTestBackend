@@ -1,0 +1,339 @@
+db.getCollection('voters').aggregate( [ { $group: { _id: "$age", total: { $sum : 1 } } } ])
+
+db.getCollection('voters').aggregate([
+{
+    $bucket:
+    {
+        groupBy : "$age", 
+        boundaries:[0,20,30,40,50], 
+        default:"other", 
+        output : 
+            {
+                "total" : {$sum : 1}, 
+                "male" : {$sum : {$cond: { if: { $eq: [ "$gender", "MALE" ] }, then: 1, else: 0 }}},
+                "female" : {$sum : {$cond: { if: { $eq: [ "$gender", "FEMALE" ] }, then: 1, else: 0 }}}  }
+            }
+    }
+])
+
+
+
+db.getCollection('voters').aggregate([
+  {$project:{male: {$cond: [{$eq: ["$gender", "MALE"]}, 1, 0]},female: {$cond: [{$eq: ["$gender", "FEMALE"]}, 1, 0]}}},
+  {$group:{_id:null,male:{$sum:"$male"},female:{$sum: "$female"},total:{$sum:1}}}
+])
+
+
+db.getCollection('voters1').aggregate([{ "$group":{"_id": null,
+"Employed":{$sum:{$cond:[{$eq:["$employment","1"]},1,0]}},
+"SelfEmployed":{$sum:{$cond:[{$eq:["$employment","2"]},1,0]}},
+"Retired":{$sum:{$cond:[{$eq:["$employment","3"]},1,0]}},
+"FullTimeStudent":{$sum:{$cond:[{$eq:["$employment","4"]},1,0]}},
+"Unspecified":{$sum:{$cond:[{$eq:["$employment","5"]},1,0]}},
+}
+}])
+
+https://stackoverflow.com/questions/40350336/export-collection-and-replace-field-with-field-from-another-collection-aggregat
+
+
+db.getCollection('surveys').aggregate([{$match:{constituencyID : ObjectId("5d885773b3346c28f2d03158")}},
+{$lookup:{from: "surveyquestions",localField: "_id",foreignField: "surveyID",as: "surveyID"}},
+{$unwind: "$surveyID"},
+])
+
+
+db.getCollection('surveys').aggregate([
+//{$match:{_id : ObjectId("5daf2beb4b818c01f613a580")}},
+{$lookup:{from: "surveyquestions",localField: "_id",foreignField: "surveyID",as: "surveyID"}},
+{$project:{_id:0,survey_name:"$survey_name",description:"$description",numOfQuetions:{$size:"$surveyID"},surveyquestions:"$surveyID"}}
+])
+
+
+
+db.getCollection('surveys').aggregate([
+//{$match:{_id : ObjectId("5daf2beb4b818c01f613a580")}},
+{$lookup:{from: "surveyquestions",localField: "_id",foreignField: "surveyID",as: "surveyID"}},
+
+{$lookup:{from: "surveyresults",localField: "surveyID._id",foreignField: "surveyquestionID",as: "surveyresults"}},
+{$project:{_id:0,survey_name:"$survey_name",description:"$description",
+    numOfQuetions:{$size:"$surveyID"},
+    surveyquestions:"$surveyID",
+    numOfAnswer:{$size:"$surveyresults"},
+    surveyresults:"$surveyresults",
+    }}
+])
+
+
+db.getCollection('voters1').aggregate([{ "$group":{"_id": null,
+"Employed":{$sum:{$cond:[{$eq:["$employment","1"]},1,0]}},
+"SelfEmployed":{$sum:{$cond:[{$eq:["$employment","2"]},1,0]}},
+"Retired":{$sum:{$cond:[{$eq:["$employment","3"]},1,0]}},
+"FullTimeStudent":{$sum:{$cond:[{$eq:["$employment","4"]},1,0]}},
+"Unspecified":{$sum:{$cond:[{$eq:["$employment","5"]},1,0]}},
+}
+}])
+
+
+db.getCollection('voters1').aggregate([{$group: {_id: "$party_name",count:{$sum: 1}}}])
+
+db.getCollection('payments').aggregate([
+{ $lookup: {from: 'users',localField:'userID',foreignField:'_id',as:'userID'}},
+{ $unwind: "$userID" },
+{ $match:{ "userID.streetID":ObjectId("5d8f0e42485d3b1386ef25e2") }},
+{ $group:{_id:{userType: '$userType',userID: '$userID'},
+  total_amount:{$sum:"$workRate"},total:{$sum:1},data:{$first:"$$ROOT"}}
+}
+])
+
+
+let totalP=await Payment.aggregate([{
+$match:{userType: result[i].userType,userID:new ObjectID(result[i].userID)}},
+{$group:{_id: "$pollingDivisionID",total:{$sum: 1}}}]);
+
+
+Payment Detail api
+db.getCollection('payments').aggregate([
+{$match:{"userID":ObjectId("5e233216c8a6602ab0292ae6")}},
+{$lookup:{ from: 'users', localField: 'userID', foreignField: '_id', as: 'userID' } },
+{$group:{_id :{$dateToString:{format:"%Y-%m-%d",date:"$createdAt"}},data:{$first:"$$ROOT"},count:{$sum:1},
+total_amount:{$sum:"$workRate"}}},
+{'$unwind':'$data.userID'},
+{ $project: {
+  _id: 1,
+//data: 1,
+userID:"$data.userID._id",
+mobile:"$data.userID.mobile_no",
+name: "$data.userID.name",
+userType: "$data.userType",
+email: "$data.userID.email",
+total_amount: 1,
+total: 1,
+count:1
+}
+}
+])
+
+
+// Election Result 
+  // result = await ElectionResult.aggregate([
+        //     // { $match: myMatch },
+        //     // {$lookup: { from: 'constituencies',localField: 'constituencyID',foreignField: '_id', as: 'constituencyID'}},
+        //     // { $unwind: "$constituencyID"},
+        //     // {$lookup: { from: 'pollingstations',localField: 'pollingStationID',foreignField: '_id', as: 'pollingStationID'}},
+        //     // { $unwind: "$pollingStationID"},
+        //     {$group:{_id:"$constituencyID", "array":{"$push":"$$ROOT"}, count:{$sum:1}}},
+        //     { "$limit":1 },
+        //     { $unwind : "$array" }
+            
+        //      //{$group:{_id:"$street_name", "data":{"$push":"$$ROOT"}, count:{$sum:1} } },
+        //         // home_phone_no:"$data.home_phone_no",mobile_no:"$data.mobile_no",party_name:"$data.party_name",volunteer:"$data.volunteer",count:1}}
+        //      ])
+
+
+ result=await ElectionResult.aggregate([
+                {$match: myMatch},
+                {$lookup: { from: 'constituencies',localField: 'constituencyID',foreignField: '_id', as: 'constituencyID'}}, 
+                { $unwind: "$constituencyID"},
+                    {
+                    $group : {
+                      _id: {constituencyID:"$constituencyID",
+                            pnmCandidateName: "$pnmCandidateName", 
+                            uncCandidateName: "$uncCandidateName",
+                            copCandidateName:"",
+                            thcCandidateName:"",
+                            tnvCandidateName:"",
+                            starCandidateName:"",
+                            indCandidateName:"",
+                            idpCandidateName:"",
+                            ncpCandidateName:"",
+                            nnvCandidateName:"",
+                            ilpCandidateName:"",
+                            msjCandidateName:"",
+                            othersCandidateName:""
+                    }, 
+                    totalVotersinArea:{$sum:'$totalVotersinArea'},
+                      //_id:"$constituencyID", count:{$sum:1},
+                           //"array": { $push : "$$ROOT" },  
+                          
+                        pnm: {$sum : '$pnmTotalVote'},
+                        unc : {$sum : '$uncTotalVote'},
+                        cop : {$sum : '$copTotalVote'},
+                        thc : {$sum : '$thcTotalVote'},
+                        tnv : {$sum : '$tnvTotalVote'},
+                        star : {$sum : '$starTotalVote'},
+                        ind : {$sum : '$indTotalVote'},
+                        idp : {$sum : '$idpTotalVote'},
+                        ncp : {$sum : '$ncpTotalVote'},
+                        nnv : {$sum : '$nnvTotalVote'},
+                        ilp : {$sum : '$ilpTotalVote'},
+                        msj : {$sum : '$msjTotalVote'},
+                        others : {$sum : '$othersTotalVote'},
+                       totalValidVotes : {$sum : '$totalValidVotes'},
+                       totalRejectedVotes : {$sum : '$totalRejectedVotes'},
+                       totalVotesCast : {$sum : '$totalVotesCast'},                       
+                    }
+                }
+            ]);
+
+
+Street captain payments request
+result = await User.aggregate([
+            {$match: myMatch},
+            { $sort: { name: 1 } },
+            // {$group : {_id : {addedByUserID: "$addedByUserID", campaingnTeamDetail:"$campaingnTeamDetail"},
+            // totalAmount: { $sum: 1}}},
+            {$lookup:{from:'campaignteams',localField:'campaingnTeamID',foreignField:'_id',as:'campaingnTeamDetail'}},
+            {$unwind: {path: "$campaingnTeamDetail",preserveNullAndEmptyArrays: true}},
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: '_id',
+                    foreignField: 'addedByUserID',
+                    as: 'users.lists'
+                }
+            },
+            {
+                $unwind: {
+                    path: "$users.lists",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            //   { $group: 
+            //         { 
+            //             _id:{
+            //                 "addedByUserID": "$addedByUserID",
+            //                 "campaingnTeamDetail": "$campaingnTeamDetail"
+            //             },
+            //             totalAmount: { $sum:1}, 
+            //         //data: { $push: '$$ROOT' }
+            //         // data:{$push: {_id:"$_id",
+            //         //                campaingnName:"$campaingnTeamDetail.campaign_name",
+            //         //                name:"$name",email:"$email",mobile_no:"$mobile_no"}} 
+            //         }
+            //      },
+            //      {
+            //     $project: {
+            //       _id:0,
+            //       data:1,
+            //       totalAmount :1,
+            //     }
+            //   }
+        ]);
+        
+
+
+db.getCollection('voters').aggregate([
+  { "$facet": {
+    "Total": [
+      { "$match" : { "mobile_no": { "$exists": true }}},
+      { "$count": "Total" },
+    ],
+    "Total2": [
+      { "$match" : { "mobile_no": { "$exists": false }}},
+      { "$count": "Total2" }
+    ]
+  }},
+  { "$project": {
+    "mobileExists": { "$arrayElemAt": ["$Total.Total", 0] },
+   "mobileNotExists": { "$arrayElemAt": ["$Total2.Total2", 0] },
+  }}
+])
+
+
+   let mobileExists=await Voter.find({"mobile_no": {"$exists":true}}).count();
+    let mobileNotExists=await Voter.find({"mobile_no": {"$exists":false}}).count();
+
+
+    var query = {
+        $or:[
+        {status:req.body.notVisited},
+        {status:req.body.answered},
+        {status:req.body.callBack},
+        {status:req.body.notInterested},
+        {status:req.body.notAtHome},
+        {status:req.body.inaccessible}
+    ],
+    $and:[ 
+        { pollingDivisionID:new ObjectID(pollingDivisionID) },
+        { constituencyID:new ObjectID(constituencyID) }
+        ]
+    }
+
+ myMatch["status"] ={ "$in":arr};
+ 
+    db.getCollection('voters').aggregate([{$group:
+        {_id:{
+          "address": "$address",
+          "apartment": "$apartment",
+          "building_no": "$building_no"
+      }
+        ,count:{$sum:1}}}])
+
+
+db.getCollection('voters').aggregate([{$match: {$and:[{"mobile_no": {$exists: false}}]}}])
+
+db.getCollection('voters').find({"mobile_no": {"$exists":true}}).count();
+db.getCollection('voters').find({"mobile_no": {"$exists":false}}).count();
+
+db.getCollection('voters').find({"is_new" : 1,year_of_register:2019})
+
+
+
+await TalkingPoint.aggregate([
+
+                { $lookup: { from: 'voters', localField: 'voterID', foreignField: '_id', as: 'voterID' } },
+                { $unwind: "$voterID" },
+                { $match: myMatch },
+                {
+                    $group: {
+                        _id: "$priority",
+                        data: { $push: "$$ROOT" }
+                    }
+                }
+                //    {
+                //         $project: {
+                //             _id: 1,
+                //             descritption:"$data.descritption",
+                //             priority:"$data.priority",
+                //             createdAt: "$data.createdAt",
+                //         }
+                //     }
+            ]);
+
+
+             var grandTotal= result.map(item => item.total_amount).reduce((prev, next) => prev + next);
+
+
+
+
+db.getCollection('voters').aggregate([
+    {"$group" : {_id:"$pollingDivisionID", count:{$sum:1}}},
+   {$sort: {"total": -1 } },{ "$limit": 10 }
+])
+db.getCollection('voters').aggregate([{$group:{_id:"$pollingDivisionID", "array":{"$push":"$$ROOT"}, count:{$sum:1}}}])
+
+
+
+
+
+db.getCollection('voters').aggregate([{$geoNear:{
+                        near: { type: "Point", coordinates:[77.4491422,  28.5667196]},
+                        maxDistance: 1000 * 50,
+                        distanceField: "dis",
+                        spherical: true,
+                        distanceMultiplier: 0.001}
+                },
+{$addFields: {"bookingDate":{$dateToString:{format:"%Y-%m-%d",date:"$createdAt"}},"time":{$dateToString:{format:"%H:%M:%S", date: "$createdAt" } }
+                    }
+                }])
+
+
+
+db.getCollection('voters').aggregate([
+   {$match: {'cab': /^no$/i,"pollingDivisionID" : ObjectId("5d8de13616e11338a830c851"),
+    "constituencyID" : ObjectId("5d885773b3346c28f2d0315f")}},
+   {$group: {
+      _id : null, 
+      aggregationCount : {$sum : 1}
+   }}
+])
