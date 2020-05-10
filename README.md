@@ -12,13 +12,8 @@
 - Routes can be protected with **JWT authentification middelwares** :
 
 # Installation
-- Clone the repository
-```
-git clone https://github.com/rajeevverma076/apiems.git
-```
 - Install dependencies
 ```
-cd apiems
 npm install
 npm run build
 "start": "npm run serve",
@@ -46,7 +41,7 @@ with the following payload ** :
 {
 	"username": "rajeev",
 	"password": "pass",
-	"role":"superadmin",
+	"role":"1",
 	"email":"rajeev@mailinator.com"
 }
 ```
@@ -56,18 +51,6 @@ You should get a JWT token in the response :
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1lMiIsImlhdCI6MTU1MDU4MTA4NH0.WN5D-BFLypnuklvO3VFQ5ucDjBT68R2Yc-gj8AlkRAs"
 }
 ```
-
-> **Note  - Please protect your registration API if you do not use any third-party identity provider !!.
-##http://13.235.92.27/img/logo.png
-## Step2 : Create a District
-Send a POST request to `http://localhost:3000/api/Districts` 
-with the following payload :
-```json
-{
-  "DistrictId": "1",
-  "name": "gaya"
-}
-``` 
 You should get an authorization **denied** !
 ```json
 {
@@ -80,24 +63,9 @@ Add the JWT token to the Authorization header :
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1lMiIsImlhdCI6MTU1MDU4MTA4NH0.WN5D-BFLypnuklvO3VFQ5ucDjBT68R2Yc-gj8AlkRAs
 ```
-You should have created the District !!
-```json
-{
-  "data": {
-    "_id": "5c6c0845e3eb8302ffd168c0",
-    "DistrictId": "1",
-     "name": "gaya",
-     "__v": 0
-  }
-}
-```
+
 # Save into dependencies 
 # npm install lodash --save
 # Save into dev dependencies 
 # npm install @types/lodash --save-dev
 
-# https://stackoverflow.com/questions/28632338/how-to-design-an-election-poll-database
-# db.getCollection('voters').find({});
-# db.getCollection('voters').getIndexes();
-# db.getCollection('voters').dropIndex('name_text');
-# db.getCollection('voters').createIndex({"name":"text", "building_no":"text","apartment":"text","address":"text","street_name": "text"});

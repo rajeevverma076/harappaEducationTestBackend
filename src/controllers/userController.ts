@@ -270,11 +270,22 @@ public get_order = async (req: Request, res: Response, next: NextFunction) => {
     try {
       let matches: any;
       let userinfo: any = req.user;
-      console.log(userinfo);
       matches = await Order.find({"sellerID":userinfo.userID,_id:req.body.orderID});
       if (matches) {
-
-        res.status(200).send({status: 1, message: 'Order detail', data: matches});
+        if(req.body.status=="accepted"){
+          let restult = await Order.findOneAndUpdate({ "_id": req.body.orderID }, { $set: {"shipping.tracking.status.accepted":true } }, { new: true }).lean();
+        }
+        if(req.body.status=="rejected"){
+          let restult = await Order.findOneAndUpdate({ "_id": req.body.orderID }, { $set: {"shipping.tracking.status.rejected":true } }, { new: true }).lean();
+        }
+        if(req.body.status=="dispatched"){
+          let restult = await Order.findOneAndUpdate({ "_id": req.body.orderID }, { $set: {"shipping.tracking.status.dispatched":true } }, { new: true }).lean();
+        }
+        if(req.body.status=="delivered"){
+          let restult = await Order.findOneAndUpdate({ "_id": req.body.orderID }, { $set: {"shipping.tracking.status.delivered":true } }, { new: true }).lean();
+        }
+     
+        res.status(200).send({status: 1, message: 'Order detail', data:matches});
       } else {
         throw new Error('Record not found');
       }

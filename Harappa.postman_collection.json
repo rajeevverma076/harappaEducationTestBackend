@@ -1,0 +1,194 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Harappa",
+		"_postman_id": "15e07e26-43a1-7906-aa74-17a1009ddb51",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"description": "",
+			"item": [
+				{
+					"name": "SignUp",
+					"request": {
+						"url": "{{local}}/user/register",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"name\": \"Sanjana\",\r\n\t\"password\": \"pass\",\r\n\t\"email\":\"sanjana@gmail.com\",\r\n\t\"role\":2,\r\n\t\"mobile_no\":\"7835950208\"\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"url": "{{local}}/user/login",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"email\":\"saller@gmail.com\",\r\n\t\"password\": \"pass\",\r\n\t\"role\":1\r\n}"
+						},
+						"description": "\t\t"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product",
+			"description": "",
+			"item": [
+				{
+					"name": "Add new product",
+					"request": {
+						"url": "{{local}}/user/addProduct",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"sku\":\"111445GB6\",\r\n  \"title\": \"Lenovo\",\r\n  \"description\":\"The greatest android phone on the market .....\",\r\n  \"manufacture_details\":{\"model_number\":\"A1234X\"},\r\n  \"quantity\":99,\r\n  \"price\":1000,\r\n \"product_image\":\"https://ithemeworld.com/wp-content/uploads/2020/03/Samsung-Galaxy-M31-Ocean-Blue-6GB-RAM-128GB-Storage.png\"\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Product Listing",
+					"request": {
+						"url": "{{local}}/user/getProduct",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"sku\":\"111445GB5\",\r\n  \"title\": \"LG\",\r\n  \"description\":\"The greatest android phone on the market .....\",\r\n  \"manufacture_details\":{\"model_number\":\"A1234X\"},\r\n  \"quantity\":99,\r\n  \"price\":1000,\r\n \" product_image\":\"https://ithemeworld.com/wp-content/uploads/2020/03/Samsung-Galaxy-M31-Ocean-Blue-6GB-RAM-128GB-Storage.png\"\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Order",
+			"description": "",
+			"item": [
+				{
+					"name": "Order Place",
+					"request": {
+						"url": "{{local}}/user/placeOrder",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"shipping\": {\r\n     \"customer\": \"Peter P Peterson\",\r\n     \"address\": \"Longroad 1343\",\r\n     \"city\": \"Peterburg\",\r\n     \"region\": \"\",\r\n     \"state\": \"PE\",\r\n     \"country\": \"Peteonia\",\r\n     \"delivery_notes\": \"Leave at the gate\",\r\n     \"tracking\": {\r\n       \"company\": \"ups\",\r\n       \"tracking_number\": \"22122X211SD\",\r\n       \"status\": 1,\r\n       \"estimated_delivery\":\"\"\r\n     }\r\n   },\r\n   \"sellerID\":\"5eb660bc2a3e7d287c28a8a0\",\r\n   \"payment\": {\"method\": \"visa\",\"transaction_id\": \"2312213312XXXTD\"},\r\n   \"products\":[\r\n        {\r\n            \"quantity\" : 2,\r\n            \"sku\" : \"111445GB3\",\r\n            \"title\" : \"Simsong mobile phone\",\r\n            \"unit_cost\" : 1000,\r\n            \"currency\" : \"INR\",\r\n            \"product_image\" : \"https://ithemeworld.com/wp-content/uploads/2020/03/Samsung-Galaxy-M31-Ocean-Blue-6GB-RAM-128GB-Storage.png\"\r\n        },\r\n        {\r\n            \"quantity\" : 1,\r\n            \"sku\" : \"111445GB1\",\r\n            \"title\" : \"Noika mobile phone\",\r\n            \"unit_cost\" : 5000,\r\n            \"currency\" : \"INR\",\r\n            \"product_image\" : \"https://ithemeworld.com/wp-content/uploads/2020/03/Samsung-Galaxy-M31-Ocean-Blue-6GB-RAM-128GB-Storage.png\"\r\n        },\r\n        {\r\n            \"quantity\" : 1,\r\n            \"sku\" : \"111445GB2\",\r\n            \"title\" : \"MI mobile phone\",\r\n            \"unit_cost\" : 1000,\r\n            \"currency\" : \"INR\",\r\n            \"product_image\" : \"https://ithemeworld.com/wp-content/uploads/2020/03/Samsung-Galaxy-M31-Ocean-Blue-6GB-RAM-128GB-Storage.png\"\r\n        }\r\n    ]\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order Detail",
+					"request": {
+						"url": "{{local}}/user/getOrder",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"shipping\": {\r\n     \"customer\": \"Peter P Peterson\",\r\n     \"address\": \"Longroad 1343\",\r\n     \"city\": \"Peterburg\",\r\n     \"region\": \"\",\r\n     \"state\": \"PE\",\r\n     \"country\": \"Peteonia\",\r\n     \"delivery_notes\": \"Leave at the gate\",\r\n     \"tracking\": {\r\n       \"company\": \"ups\",\r\n       \"tracking_number\": \"22122X211SD\",\r\n       \"status\": 1,\r\n       \"estimated_delivery\":\"\"\r\n     }\r\n   },\r\n   \"sellerID\":\"5eb660bc2a3e7d287c28a8a0\",\r\n   \"payment\": {\"method\": \"visa\",\"transaction_id\": \"2312213312XXXTD\"},\r\n   \"products\":[{\"quantity\": 2, \"sku\":\"111445GB3\", \"title\": \"Simsong mobile phone\", \"unit_cost\":1000, \"currency\":\"USDA\"}]\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Order accept or reject",
+					"request": {
+						"url": "{{local}}/user/orderAcceptOrReject",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"orderID\" : \"5eb806498c1a702824d3b9a6\",\r\n\"status\":\"dispatched\"\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
